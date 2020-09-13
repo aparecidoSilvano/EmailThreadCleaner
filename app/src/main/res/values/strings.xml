@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EmailCleaner</string>
+    <string name="email_clean_duplicates">Clean duplicates</string>
 </resources>
