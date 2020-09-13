@@ -8,4 +8,6 @@ However, I wasn't able to implement an application with only a service that coul
 
 [MyLinkedList](app/src/main/java/com/silvanoalbuquerque/emailcleaner/model/mylinkedlist/MyLinkedList.java) Is my implementation for the LinkedList, some unit tests can be found on [EmailThreadTest](app/src/test/java/com/silvanoalbuquerque/emailcleaner/EmailThreadTest.java).
 
+## Application
+
 ![](application.gif)
