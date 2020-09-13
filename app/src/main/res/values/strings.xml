@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">EmailCleaner</string>
-    <string name="email_clean_duplicates">Clean duplicates</string>
+    <string name="action_add_duplicates">Add duplicates</string>
+    <string name="action_remove_duplicates">Remove duplicates</string>
+    <string name="added_duplicated_emails_message">It was added %d duplicate emails</string>
+    <string name="removed_duplicated_emails_message">It was removed %d duplicate emails</string>
+    <string name="total_of_emails">Total of emails: %d</string>
 </resources>

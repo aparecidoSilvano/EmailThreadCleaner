@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
@@ -24,10 +25,11 @@
             style="@style/TextAppearance.MdcTypographyStyles.Subtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/item_email_recipient"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@id/item_email_recipient"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Test test test" />
+            tools:text="Test" />
 
         <TextView
             android:id="@+id/item_email_recipient"
@@ -36,8 +38,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_email_subject"
-            tools:text="Test test test" />
+            app:layout_constraintTop_toBottomOf="@id/item_email_subject"
+            tools:text="Test" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

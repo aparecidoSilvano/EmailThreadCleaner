@@ -1,6 +1,11 @@
 package com.silvanoalbuquerque.emailcleaner.model.mylinkedlist;
 
-public class MyLinkedList<T> {
+import java.io.Serializable;
+
+public class MyLinkedList<T> implements Serializable {
+
+    private static final long serialVersionUID = -4939897577054246990L;
+
     private Node<T> head;
     private int countElements;
 
@@ -65,6 +70,31 @@ public class MyLinkedList<T> {
         }
 
         countElements--;
+    }
+
+    public int removeDuplicates() {
+        int countDuplicates = 0;
+        Node<T> currentNode, nextNode;
+        currentNode = head;
+
+        while (currentNode != null && currentNode.getNext() != null) {
+            nextNode = currentNode;
+
+            while (nextNode.getNext() != null) {
+
+                if (currentNode.getData().equals(nextNode.getNext().getData())) {
+                    nextNode.setNext(nextNode.getNext().getNext());
+                    countDuplicates++;
+                    countElements--;
+                } else {
+                    nextNode = nextNode.getNext();
+                }
+            }
+
+            currentNode = currentNode.getNext();
+        }
+
+        return countDuplicates;
     }
 
     public int size() {

@@ -3,7 +3,12 @@ package com.silvanoalbuquerque.emailcleaner.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class Email {
+import java.io.Serializable;
+
+public class Email implements Serializable {
+
+    private static final long serialVersionUID = -7610423066355963472L;
+
     private String subject;
     private String recipient;
 

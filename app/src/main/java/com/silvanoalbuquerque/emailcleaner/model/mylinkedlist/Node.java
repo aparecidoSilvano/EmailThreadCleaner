@@ -1,6 +1,11 @@
 package com.silvanoalbuquerque.emailcleaner.model.mylinkedlist;
 
-public class Node<T> {
+import java.io.Serializable;
+
+public class Node<T> implements Serializable {
+
+    private static final long serialVersionUID = -7748740789523661745L;
+
     private T data;
     private Node<T> next;
 

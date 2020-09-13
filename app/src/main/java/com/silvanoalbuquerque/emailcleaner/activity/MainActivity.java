@@ -1,8 +1,11 @@
 package com.silvanoalbuquerque.emailcleaner.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.Menu;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,14 +17,20 @@ import com.silvanoalbuquerque.emailcleaner.activity.util.EmailsAdapter;
 import com.silvanoalbuquerque.emailcleaner.activity.util.IEmailsListContext;
 import com.silvanoalbuquerque.emailcleaner.model.Email;
 import com.silvanoalbuquerque.emailcleaner.model.mylinkedlist.MyLinkedList;
+import com.silvanoalbuquerque.emailcleaner.service.EmailCleanerJobService;
 import com.silvanoalbuquerque.emailcleaner.service.EmailCleanerReceiver;
+import com.silvanoalbuquerque.emailcleaner.util.Constants;
+
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements EmailCleanerReceiver.IEventsListener, IEmailsListContext {
-    @BindView(R.id.emails_list)
-    RecyclerView emailsRecyclerView;
+    @BindView(R.id.emails_list) RecyclerView emailsRecyclerView;
+    @BindView(R.id.pb_loading_emails) ProgressBar pbLoadingEmails;
+    @BindView(R.id.tv_count_emails) TextView tvCountEmails;
 
     private EmailCleanerReceiver cleanerReceiver;
     private MyLinkedList<Email> data;
@@ -36,33 +45,44 @@ public class MainActivity extends AppCompatActivity implements EmailCleanerRecei
 
         initUi();
         loadData();
-
-        /*Button button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mIntent = new Intent(MainActivity.this, EmailCleanerJobService.class);
-                mIntent.putExtra("maxCountValue", 10);
-                mIntent.putExtra("receiver", cleanerReceiver);
-                EmailCleanerJobService.enqueueWork(MainActivity.this, mIntent);
-            }
-        });*/
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
     }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
-        Toast.makeText(this, "SERVICE HAS FINISHED IT JOB, " + resultData.getString("data"), Toast.LENGTH_LONG).show();
+        if (resultCode == Constants.JOB_RECEIVER_RESULT_CODE) {
+            MyLinkedList<Email> resultList = (MyLinkedList<Email>) resultData.get(Constants.EMAIL_JOB_RESULT_DATA_KEY);
+            int countRemovedElements = data.size() - resultList.size();
+            data = resultList;
+            emailsAdapter.notifyDataSetChanged();
+
+            updateTotalEmailsView();
+
+            String message = getString(R.string.removed_duplicated_emails_message, countRemovedElements);
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public MyLinkedList<Email> getEmails() {
         return data;
+    }
+
+    @OnClick(R.id.add_duplicates)
+    public void onCLickOnAddDuplicates() {
+        generateDuplicates(Constants.COUNT_DUPLICATES);
+        String msg = getString(R.string.added_duplicated_emails_message, Constants.COUNT_DUPLICATES);
+
+        updateTotalEmailsView();
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.remove_duplicates)
+    public void onCLickOnRemoveDuplicates() {
+        Intent mIntent = new Intent(MainActivity.this, EmailCleanerJobService.class);
+        mIntent.putExtra(Constants.JOB_RECEIVER_KEY, cleanerReceiver);
+        mIntent.putExtra(Constants.EMAILS_LIST_KEY, data);
+
+        EmailCleanerJobService.enqueueWork(MainActivity.this, mIntent);
     }
 
     private void initUi() {
@@ -101,5 +121,34 @@ public class MainActivity extends AppCompatActivity implements EmailCleanerRecei
 
         emailsAdapter = new EmailsAdapter(this);
         emailsRecyclerView.setAdapter(emailsAdapter);
+
+        showEmailsList();
+        updateTotalEmailsView();
+    }
+
+    private void updateTotalEmailsView() {
+        String totalStr = getString(R.string.total_of_emails, data.size());
+        tvCountEmails.setText(totalStr);
+    }
+
+    private void showEmailsList() {
+        pbLoadingEmails.setVisibility(View.GONE);
+        emailsRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void generateDuplicates(int numDuplicates) {
+        Random rand = new Random();
+        int maxIndex = data.size();
+
+        for (int i = 0; i < numDuplicates; i++) {
+            int randomItem = rand.nextInt(maxIndex);
+
+            Email originalEmail = data.get(randomItem);
+            Email newEmail = new Email(originalEmail.getSubject(), originalEmail.getRecipient());
+
+            data.add(newEmail);
+        }
+
+        emailsAdapter.notifyDataSetChanged();
     }
 }

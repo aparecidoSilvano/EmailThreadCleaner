@@ -21,27 +21,31 @@ public class EmailThreadTest {
     Email email10 = new Email("E-mail 10", "user2@gmail.com");
 
     @Test
-    public void testInsertionsAtTheEnd() {
+    public void checkMyLinkedListStateFlow() {
         MyLinkedList<Email> myLinkedList = new MyLinkedList<>();
-        myLinkedList.add(email1);
+        // checking initial state
+        assertEquals(0, myLinkedList.size());
 
+        // checking adding one element
+        myLinkedList.add(email1);
         assertEquals(1, myLinkedList.size());
 
+        // checking adding more 3 elements
         myLinkedList.add(email2);
         myLinkedList.add(email3);
         myLinkedList.add(email4);
-
         assertEquals(4, myLinkedList.size());
 
+        // checking adding more 6 elements
         myLinkedList.add(email5);
         myLinkedList.add(email6);
         myLinkedList.add(email7);
         myLinkedList.add(email8);
         myLinkedList.add(email9);
         myLinkedList.add(email10);
-
         assertEquals(10, myLinkedList.size());
 
+        // checking the elements in the list by index
         assertEquals(myLinkedList.get(0), email1);
         assertEquals(myLinkedList.get(1), email2);
         assertEquals(myLinkedList.get(2), email3);
@@ -53,6 +57,14 @@ public class EmailThreadTest {
         assertEquals(myLinkedList.get(8), email9);
         assertEquals(myLinkedList.get(9), email10);
 
+        // checking fail at accessing invalid indexes
+        try {
+            myLinkedList.get(-1);
+            fail();
+        } catch (IndexOutOfBoundsException e) {
+            // OK
+        }
+
         try {
             myLinkedList.get(10);
             fail();
@@ -60,19 +72,49 @@ public class EmailThreadTest {
             // OK
         }
 
+        // checking the deletion of the first element
         myLinkedList.remove(0);
         assertEquals(9, myLinkedList.size());
         assertEquals(myLinkedList.get(0), email2);
 
+        // checking the deletion of the last element
         myLinkedList.remove(8);
         assertEquals(8, myLinkedList.size());
         assertEquals(myLinkedList.get(7), email9);
 
+        // checking the deletion of all elements
         for (int i = 7; i >= 0; i--) {
             myLinkedList.remove(i);
             assertEquals(i, myLinkedList.size());
         }
 
         assertEquals(0, myLinkedList.size());
+        assertEquals(0, myLinkedList.removeDuplicates());
+
+        // reading elements into the list
+        myLinkedList.add(email1);
+        myLinkedList.add(email2);
+        myLinkedList.add(email3);
+        myLinkedList.add(email4);
+
+        assertEquals(4, myLinkedList.size());
+        // ensuring the absence of duplicate elements
+        assertEquals(0, myLinkedList.removeDuplicates());
+
+        // checking the deletion of duplicated elements
+        myLinkedList.add(email2);
+
+        assertEquals(5, myLinkedList.size());
+        assertEquals(1, myLinkedList.removeDuplicates());
+        assertEquals(4, myLinkedList.size());
+
+        myLinkedList.add(email1);
+        myLinkedList.add(email2);
+        myLinkedList.add(email3);
+        myLinkedList.add(email4);
+
+        assertEquals(8, myLinkedList.size());
+        assertEquals(4, myLinkedList.removeDuplicates());
+        assertEquals(4, myLinkedList.size());
     }
 }
